@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/ksdt/podcast/issues"
   },
-  "homepage": "https://github.com/ksdt/podcast#readme"
+  "homepage": "https://github.com/ksdt/podcast#readme",
+  "dependencies": {
+    "express": "^4.13.3",
+    "rss": "^1.2.1"
+  }
 }
