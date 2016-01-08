@@ -78,7 +78,7 @@ app.post('/uploadepisode', upload.single('episode-file'), function (req, res) {
         fs.renameSync(req.file.path, newPath);
 
         item.enclosure = {
-            url: baseURL'+users[req.body.secret]+'/'+req.file.filename,
+            url: baseURL+users[req.body.secret]+'/'+req.file.filename,
             file: newPath
         }
 
