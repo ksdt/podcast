@@ -7,18 +7,6 @@ var express = require('express'),
     podcast = require('podcast');
 
 
-/* files pass through here to get routed */
-var fileStorage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        console.log('here', './public/podcast/'+users[req.body.secret]);
-        cb(null, './public/podcast/'+users[req.body.secret]);
-    },
-    filename: function (req, file, cb) {
-        console.log(file);
-        cb(null, file.fieldname);
-    }
-});
-
 /* files pass through here and get rejected/accepted */
 function authorize(req, file, cb) {
     if (users[req.body.secret]) { //password matches a user
