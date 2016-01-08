@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload your Podcast</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/base-min.css">
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="pure-g">
+        <div class="content pure-u-1">
+            <form enctype="multipart/form-data" class="pure-form pure-form-stacked" action="/uploadepisode" method="post">
+                <fieldset>
+                    <legend>Upload a new podcast episode</legend>
+
+                    <div class="itunes-legend">
+                        <p>See what does what here: <a href="https://www.apple.com/itunes/podcasts/specs.html#rss"> click this </a></p>
+                    </div>
+
+                    <label for="episode-title">Episode Title</label>
+                    <input name="episode-title" id="episode-title" type="text" placeholder="Simon Helberg">
+
+                    <label for="episode-duration">Episode Duration</label>
+                    <input name="episode-duration" id="episode-duration" type="text" placeholder="HH:MM:SS">
+                    
+                    <label for="episode-subtitle">Episode Subtitle</label>
+                    <textarea name="episode-subtitle" id="episode-subtitle" type="text" placeholder="Simon Helberg chats with..."></textarea>
+                    
+                    <label for="episode-description">Episode Description</label>
+                    <textarea name="episode-description" id="episode-description" type="text" placeholder="Full Episode Description here"></textarea>
+
+                    <label for="episode-file">Episode MP3 File</label>
+                    <input name="episode-file" type="file" id="episode-file">
+
+                    <label for="secret">Your Secret Code</label>
+                    <input name="secret" type="password" id="secret">
+
+                    <button type="submit" class="pure-button pure-button-primary">Submit</button>
+                </fieldset>
+            </form>
+            <form enctype="multipart/form-data" class="pure-form pure-form-stacked" action="/updatechannel" method="post" id="update-channel">
+                <fieldset>
+                    <legend>Change the global information for your podcast</legend>
+                    
+                    <div class="itunes-legend">
+                        <p>See what does what here: <a href="https://www.apple.com/itunes/podcasts/specs.html#rss"> click this </a></p>
+                    </div>
+
+                    <label for="channel-title">channel title</label>
+                    <input name="channel-title" type="text" id="channel-title" placeholder="The Nerdist">
+
+                    <label for="channel-author">channel author</label>
+                    <input name="channel-author" type="text" id="channel-author" placeholder="Chris Hardiwck">
+
+                    <label for="channel-image">channel image</label>
+                    <input type="file" name="channel-image" id="channel-image">
+
+                    <label for="channel-summary">channel summary</label>
+                    <textarea name="channel-summary" id="channel-summary" placeholder="couches couches couches couches. which 1 shall i pick?~"></textarea>
+
+                    <label for="channel-category">channel category</label>
+                    <input name="channel-category" type="text" id="channel-category" placeholder="Comedy">
+
+                    <label for="explicit" class="pure-checkbox">
+                        <input name="channel-explicit" type="checkbox" id="channel-explicit"> Channel is explicit
+                    </label>
+
+                    <label for="secret">Your Secret Code</label>
+                    <input name="secret" type="password" id="secret">
+
+                    <button type="submit" class="pure-button pure-button-primary">Submit</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
