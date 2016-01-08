@@ -19,6 +19,8 @@ var upload = multer({ dest: 'uploads/', limits: { fileFilter: authorize } });
 
 var app = express();
 
+var baseURL = 'https://ksdt.ucsd.edu/podcast/';
+
 app.use(express.static('public'));
 
 app.get('/rss/:user', function (req, res) {
@@ -76,7 +78,7 @@ app.post('/uploadepisode', upload.single('episode-file'), function (req, res) {
         fs.renameSync(req.file.path, newPath);
 
         item.enclosure = {
-            url: 'ksdt.ucsd.edu/podcast/'+users[req.body.secret]+'/'+req.file.filename,
+            url: baseURL'+users[req.body.secret]+'/'+req.file.filename,
             file: newPath
         }
 
@@ -101,7 +103,7 @@ app.post('/updatechannel', upload.single('channel-image'), function (req, res) {
         channel.title = req.body['channel-title'];
         channel.description = req.body['channel-summary'];
         channel.author = req.body['channel-author'];
-        channel.feed_url = 'https://ksdt.org/podcast/rss/'+users[req.body.secret];
+        channel.feed_url = baseURL+'rss/'+users[req.body.secret];
         channel.site_url = 'https://ksdt.org';
         channel.image_url = 'https://ksdt.ucsd.edu/podcast/'+users[req.body.secret]+'/'+req.file.filename;
         channel.webMaster = 'Tennyson Holloway <thollowa@ucsd.edu>';
@@ -112,7 +114,7 @@ app.post('/updatechannel', upload.single('channel-image'), function (req, res) {
         channel.itunesAuthor = req.body['channel-author'];
         channel.itunesExplicit = req.body['channel-explicit'];
         channel.itunesCategory = [ { text: req.body['channel-category'] } ];
-        channel.itunesImage = 'https://ksdt.ucsd.edu/podcast/'+users[req.body.secret]+'/'+req.file.filename;
+        channel.itunesImage = baseURL + users[req.body.secret]+'/'+req.file.filename;
 
         fs.renameSync(req.file.path, './public/podcast/' + users[req.body.secret] + '/' + req.file.filename);
 
