@@ -67,15 +67,18 @@ app.post('/uploadepisode', upload.single('episode-file'), function (req, res) {
         item.itunesSummary = req.body['episode-description'];
         item.itunesDuration = req.body['episode-duration'];
         item.date = new Date();
-        item.enclosure = {
-            url: 'ksdt.ucsd.edu/podcast/'+users[req.body.secret]+'/'+req.file.filename,
-            file: req.file.path
-        }
 
 
         /* mv uploaded file in users's folder */
 
-        fs.renameSync(req.file.path, './public/podcast/' + users[req.body.secret] + '/' + req.file.filename);
+        var newPath = './public/podcast/' + users[req.body.secret] + '/' + req.file.filename;
+
+        fs.renameSync(req.file.path, newPath);
+
+        item.enclosure = {
+            url: 'ksdt.ucsd.edu/podcast/'+users[req.body.secret]+'/'+req.file.filename,
+            file: newPath
+        }
 
         jsonfile.writeFile('./public/podcast/' +
                 users[req.body.secret] +
