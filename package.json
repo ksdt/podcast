@@ -18,6 +18,8 @@
   "homepage": "https://github.com/ksdt/podcast#readme",
   "dependencies": {
     "express": "^4.13.3",
+    "jsonfile": "^2.2.3",
+    "moment": "^2.11.0",
     "multer": "^1.1.0",
     "podcast": "^0.2.2"
   }
