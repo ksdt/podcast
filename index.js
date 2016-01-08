@@ -4,17 +4,18 @@ var express = require('express'),
     multer = require('multer'),
     moment = require('moment'),
     jsonfile = require('jsonfile'),
-    podcast = require('podcast'),
-    upload = multer({ storage: fileStorage, limits: { fileFilter: authorize } });
+    podcast = require('podcast');
 
 
 /* files pass through here to get routed */
 var fileStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, './podcast/'+users[req.body.secret]);
+        console.log('here', './public/podcast/'+users[req.body.secret]);
+        cb(null, './public/podcast/'+users[req.body.secret]);
     },
     filename: function (req, file, cb) {
-        cb(null, file.filename);
+        console.log(file);
+        cb(null, file.fieldname);
     }
 });
 
@@ -26,19 +27,18 @@ function authorize(req, file, cb) {
         cb(null, false); //reject
     }
 }
+var upload = multer({ dest: 'uploads/', limits: { fileFilter: authorize } });
 
 var app = express();
 
 app.use(express.static('public'));
-app.use(express.static('uploads'));
-app.use('/podcast', express.static('podcast'));
 
 app.get('/rss/:user', function (req, res) {
     /* build feed for user */
     if (/^[a-z0-9]+$/i.test(req.params.user)) {
-        if (fs.existsSync('./podcast/'+req.params.user+'/')) {
-            if (fs.existsSync('./podcast/'+req.params.user+'/feed.json')) {
-                var feed = jsonfile.readFileSync('./podcast/'+req.params.user+'/feed.json');
+        if (fs.existsSync('./public/podcast/'+req.params.user+'/')) {
+            if (fs.existsSync('./public/podcast/'+req.params.user+'/feed.json')) {
+                var feed = jsonfile.readFileSync('./public/podcast/'+req.params.user+'/feed.json');
                 if (!feed)
                     res.send('could not find channel information').end();
             } else {
@@ -49,10 +49,10 @@ app.get('/rss/:user', function (req, res) {
 
             var items = [];
             /* read files in items directory */
-            fs.readdir('./podcast/'+req.params.user+'/items', function (err, files) {
+            fs.readdir('./public/podcast/'+req.params.user+'/items', function (err, files) {
                 /* parse json from each file, then add to podcast feed */
                 files.forEach(function (file) {
-                    items.push(userPodcast.item(jsonfile.readFileSync('./podcast/'+req.params.user+'/items/'+file)));
+                    items.push(userPodcast.item(jsonfile.readFileSync('./public/podcast/'+req.params.user+'/items/'+file)));
                 });
 
                 res.set('Content-Type', 'application/rss+xml');
@@ -83,7 +83,13 @@ app.post('/uploadepisode', upload.single('episode-file'), function (req, res) {
             url: 'ksdt.ucsd.edu/podcast/'+users[req.body.secret]+'/'+req.file.filename,
             file: req.file.path
         }
-        jsonfile.writeFile('./podcast/' +
+
+
+        /* mv uploaded file in users's folder */
+
+        fs.renameSync(req.file.path, './public/podcast/' + users[req.body.secret] + '/' + req.file.filename);
+
+        jsonfile.writeFile('./public/podcast/' +
                 users[req.body.secret] +
                 '/items/' +
                 item.title +
@@ -117,7 +123,9 @@ app.post('/updatechannel', upload.single('channel-image'), function (req, res) {
         channel.itunesCategory = [ { text: req.body['channel-category'] } ];
         channel.itunesImage = 'https://ksdt.ucsd.edu/podcast/'+users[req.body.secret]+'/'+req.file.filename;
 
-        jsonfile.writeFile('./podcast/' +
+        fs.renameSync(req.file.path, './public/podcast/' + users[req.body.secret] + '/' + req.file.filename);
+
+        jsonfile.writeFile('./public/podcast/' +
                 users[req.body.secret] +
                 '/feed.json', channel, function (err) {
             console.log(err);
@@ -133,19 +141,30 @@ app.post('/updatechannel', upload.single('channel-image'), function (req, res) {
 
 var users = {};
 
-fs.readFile('.pass', function (err, data) {
+if (!fs.existsSync('./.pass')) {
+    console.log("No .pass file detected. See README.");
+    process.exit(1);
+}
+
+fs.readFile('./.pass', function (err, data) {
     if (!err) {
         console.log(data.toString());
+
+        if (!fs.existsSync('./public/podcast')) {
+            fs.mkdirSync('./public/podcast');
+        }
+
+        /* split by line, then add users from line data */
         data.toString().split('\n').forEach(function(line) {
-            var user_pass = line.split(' ');
+            var user_pass = line.split(' '); /* file is in the form: user pass */
             if (user_pass[0]) {
                 users[user_pass[1]] = user_pass[0];
                 /* create the user's folder if it doesn't exist*/
-                if (!fs.existsSync('./podcast/'+user_pass[0])) {
-                    fs.mkdirSync('./podcast/'+user_pass[0]);
+                if (!fs.existsSync('./public/podcast/'+user_pass[0])) {
+                    fs.mkdirSync('./public/podcast/'+user_pass[0]);
                 }
-                if (!fs.existsSync('./podcast/'+user_pass[0]+'/items'))
-                    fs.mkdirSync('./podcast/'+user_pass[0]+'/items');
+                if (!fs.existsSync('./public/podcast/'+user_pass[0]+'/items'))
+                    fs.mkdirSync('./public/podcast/'+user_pass[0]+'/items');
             }
         });
         console.log(users);
@@ -155,4 +174,4 @@ fs.readFile('.pass', function (err, data) {
     }
 });
 
-var server = app.listen(3000);
+var server = app.listen(process.env.PORT || 3000); //start express server
