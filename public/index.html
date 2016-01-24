@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Upload your Podcast</title>
-    <link rel="stylesheet" href="podcast/base-min.css">
-    <link rel="stylesheet" href="podcast/pure-min.css">
-    <link rel="stylesheet" href="podcast/style.css">
+    <link rel="stylesheet" href="/podcast/base-min.css">
+    <link rel="stylesheet" href="/podcast/pure-min.css">
+    <link rel="stylesheet" href="/podcast/style.css">
 </head>
 <body>
     <div class="pure-g">
         <div class="content pure-u-1">
-            <form enctype="multipart/form-data" class="pure-form pure-form-stacked" action="/uploadepisode" method="post">
+            <form enctype="multipart/form-data" class="pure-form pure-form-stacked" action="/podcast/uploadepisode" method="post">
                 <fieldset>
                     <legend>Upload a new podcast episode</legend>
 
@@ -39,7 +39,7 @@
                     <button type="submit" class="pure-button pure-button-primary">Submit</button>
                 </fieldset>
             </form>
-            <form enctype="multipart/form-data" class="pure-form pure-form-stacked" action="/updatechannel" method="post" id="update-channel">
+            <form enctype="multipart/form-data" class="pure-form pure-form-stacked" action="/podcast/updatechannel" method="post" id="update-channel">
                 <fieldset>
                     <legend>Change the global information for your podcast</legend>
                     
