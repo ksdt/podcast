@@ -37,7 +37,7 @@ var baseURL = 'https://ksdt.ucsd.edu/podcast/';
 
 app.use(express.static('public'));
 
-app.get('/rss/:user', function (req, res) {
+app.get('/rss/:user.?(xml)?', function (req, res) {
     /* build feed for user */
     if (/^[a-z0-9]+$/i.test(req.params.user)) {
         if (fs.existsSync('./public/podcast/'+req.params.user+'/')) {
@@ -127,6 +127,10 @@ app.post('/updatechannel', upload.single('channel-image'), function (req, res) {
         channel.itunesSummary = req.body['channel-summary'];
         channel.itunesAuthor = req.body['channel-author'];
         channel.itunesExplicit = req.body['channel-explicit'];
+        channel.itunesOwner = {
+            name: req.body['channel-admin'],
+            email: req.body['channel-admin-email']
+        };
         channel.itunesCategory = [ { text: req.body['channel-category'] } ];
         channel.itunesImage = baseURL + 'podcast/' + users[req.body.secret]+'/'+req.file.filename;
 
