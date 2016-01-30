@@ -3,6 +3,8 @@ var express = require('express'),
     xml = require('xml'),
     multer = require('multer'),
     moment = require('moment'),
+    crypto = require('crypto'),
+    path = require('path'),
     jsonfile = require('jsonfile'),
     podcast = require('podcast');
 
@@ -15,7 +17,19 @@ function authorize(req, file, cb) {
         cb(null, false); //reject
     }
 }
-var upload = multer({ dest: 'uploads/', limits: { fileFilter: authorize } });
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads/');
+    },
+    filename: function (req, file, cb) {
+        crypto.pseudoRandomBytes(16, function (err, raw) {
+            cb(null, raw.toString('hex') + Date.now() + '.' + path.extname(file.originalname));
+        });
+    }
+});
+
+var upload = multer({ storage: storage, limits: { fileFilter: authorize } });
+
 
 var app = express();
 
